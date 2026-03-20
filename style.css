@@ -41,6 +41,47 @@ button {
   display: none !important;
 }
 
+.orientation-warning {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #060910;
+  color: #ffffff;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.orientation-warning__icon {
+  font-size: 56px;
+  margin-bottom: 20px;
+  animation: rotatePhone 2s infinite ease-in-out;
+}
+
+.orientation-warning__text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #aeb9d7;
+}
+
+@keyframes rotatePhone {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-12deg);
+  }
+
+  75% {
+    transform: rotate(12deg);
+  }
+}
+
 .game-shell {
   display: flex;
   flex-direction: column;

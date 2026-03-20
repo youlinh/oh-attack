@@ -2818,9 +2818,9 @@ function updateBaseLayout() {
   const enemyBase = gameState.bases.enemy;
 
   const compactLayout = width < 640;
-  const baseWidth = compactLayout ? 72 : 104;
-  const baseHeight = compactLayout ? 94 : 136;
-  const margin = compactLayout ? 10 : 36;
+  const baseWidth = compactLayout ? 54 : 104;
+  const baseHeight = compactLayout ? 72 : 136;
+  const margin = compactLayout ? 6 : 36;
 
   playerBase.width = baseWidth;
   playerBase.height = baseHeight;
