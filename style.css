@@ -802,3 +802,85 @@ button {
   }
 }
 
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .top-bar {
+    gap: 6px;
+    padding: 4px 12px;
+  }
+
+  .stat-card,
+  .sound-toggle-button {
+    min-height: 36px;
+  }
+
+  .stat-card {
+    gap: 1px;
+    padding: 4px 8px;
+    border-radius: 10px;
+  }
+
+  .top-bar strong {
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.03em;
+  }
+
+  .sound-toggle-button {
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 10px;
+  }
+
+  .sound-toggle-icon {
+    font-size: 12px;
+  }
+
+  .sound-toggle-text {
+    font-size: 11px;
+  }
+
+  .battlefield-frame {
+    min-height: 120px;
+    padding: 0 12px 4px;
+  }
+
+  .control-panel {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+  }
+
+  .unit-buttons {
+    flex: 1;
+    gap: 6px;
+  }
+
+  .action-button {
+    min-height: 40px;
+    padding: 6px 8px;
+    gap: 1px;
+  }
+
+  .action-button .button-title {
+    font-size: 11px;
+  }
+
+  .action-button .button-meta {
+    font-size: 9px;
+  }
+
+  .shop-button {
+    width: auto;
+    min-width: 108px;
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+
