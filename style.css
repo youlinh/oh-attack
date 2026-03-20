@@ -461,49 +461,139 @@ button {
 }
 
 @media (max-width: 900px) {
-  .control-panel {
-    flex-direction: column;
-    align-items: stretch;
+  html,
+  body,
+  .game-shell {
+    height: 100dvh;
+    min-height: 100dvh;
   }
 
-  .unit-buttons,
-  .shop-grid,
-  .shop-summary {
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  .game-shell {
+    overflow: hidden;
+  }
+
+  .top-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px 14px 10px;
+  }
+
+  .top-bar > * {
+    min-width: 0;
+  }
+
+  .stat-card,
+  .sound-toggle-button {
+    min-height: 58px;
+  }
+
+  .stat-card {
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .top-bar strong {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .sound-toggle-button {
+    padding: 10px 12px;
+  }
+
+  .sound-toggle-icon {
+    font-size: 16px;
+  }
+
+  .sound-toggle-text {
+    font-size: 13px;
+  }
+
+  .battlefield-frame {
+    flex: 1 1 auto;
+    min-height: clamp(240px, 42dvh, 520px);
+    padding: 0 14px 14px;
+  }
+
+  #gameCanvas {
+    border-radius: 16px;
+  }
+
+  .control-panel {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px 14px calc(14px + env(safe-area-inset-bottom));
+  }
+
+  .unit-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .unit-buttons > * {
+    min-width: 0;
+  }
+
+  .action-button {
+    min-height: 52px;
+    padding: 10px 12px;
+    gap: 3px;
+    border-radius: 14px;
+  }
+
+  .action-button .button-title {
+    font-size: 14px;
+  }
+
+  .action-button .button-meta {
+    font-size: 11px;
   }
 
   .shop-button {
     width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  .battlefield-frame {
-    padding: 0 12px 12px;
+    min-height: 48px;
   }
 
-  .top-bar,
-  .control-panel {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .top-bar,
-  .unit-buttons,
   .shop-grid,
-  .shop-summary,
-  .result-actions {
+  .shop-summary {
     grid-template-columns: 1fr;
   }
 
   .shop-overlay,
   .result-overlay {
-    padding: 12px;
+    padding: 14px;
   }
 
   .shop-modal,
   .result-modal {
+    width: min(100%, 860px);
+    max-height: calc(100dvh - 28px);
+    padding: 18px;
+  }
+
+  .shop-card {
+    min-height: 0;
     padding: 16px;
+  }
+
+  .shop-card-content h3,
+  .shop-header h2,
+  .result-modal h2 {
+    font-size: 24px;
+  }
+
+  .shop-card-content p,
+  .shop-state,
+  .shop-summary-item span,
+  .result-description {
+    font-size: 13px;
   }
 
   .shop-card-footer,
@@ -515,5 +605,148 @@ button {
   .shop-action-button,
   .result-button {
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  html,
+  body,
+  .game-shell {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .top-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px 12px 8px;
+  }
+
+  .stat-card,
+  .sound-toggle-button {
+    min-height: 48px;
+  }
+
+  .stat-card {
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .top-bar strong {
+    font-size: 12px;
+    line-height: 1.15;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .sound-toggle-button {
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .sound-toggle-icon {
+    font-size: 14px;
+  }
+
+  .sound-toggle-text {
+    font-size: 12px;
+  }
+
+  .battlefield-frame {
+    flex: 1 1 auto;
+    min-height: clamp(220px, 40dvh, 420px);
+    padding: 0 12px 10px;
+  }
+
+  #gameCanvas {
+    border-radius: 14px;
+  }
+
+  .control-panel {
+    gap: 10px;
+    padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .unit-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .action-button {
+    min-height: 44px;
+    padding: 8px 10px;
+    gap: 2px;
+    border-radius: 12px;
+  }
+
+  .action-button .button-title {
+    font-size: 12px;
+  }
+
+  .action-button .button-meta {
+    font-size: 10px;
+  }
+
+  .shop-button {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .shop-overlay,
+  .result-overlay {
+    padding: 10px;
+  }
+
+  .shop-modal,
+  .result-modal {
+    max-height: calc(100dvh - 20px);
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .shop-header h2,
+  .result-modal h2 {
+    font-size: 20px;
+  }
+
+  .shop-summary-item {
+    padding: 12px;
+  }
+
+  .shop-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .shop-card-content h3 {
+    margin: 8px 0 6px;
+    font-size: 18px;
+  }
+
+  .shop-card-content p,
+  .shop-state,
+  .shop-summary-item span,
+  .result-description {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .shop-tag {
+    min-height: 22px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .shop-action-button,
+  .result-button {
+    min-height: 40px;
+    padding: 9px 12px;
+    font-size: 13px;
   }
 }
