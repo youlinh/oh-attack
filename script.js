@@ -2816,10 +2816,24 @@ function updateBaseLayout() {
   const { width, laneY } = gameState.battlefield;
   const playerBase = gameState.bases.player;
   const enemyBase = gameState.bases.enemy;
-  const baseY = laneY - playerBase.height * 0.14;
 
-  playerBase.setPosition(36 + playerBase.width / 2, baseY);
-  enemyBase.setPosition(width - 36 - enemyBase.width / 2, baseY);
+  const compactLayout = width < 640;
+  const baseWidth = compactLayout ? 72 : 104;
+  const baseHeight = compactLayout ? 94 : 136;
+  const margin = compactLayout ? 10 : 36;
+
+  playerBase.width = baseWidth;
+  playerBase.height = baseHeight;
+  playerBase.collisionRadius = baseWidth * 0.42;
+
+  enemyBase.width = baseWidth;
+  enemyBase.height = baseHeight;
+  enemyBase.collisionRadius = baseWidth * 0.42;
+
+  const baseY = laneY - baseHeight * 0.14;
+
+  playerBase.setPosition(margin + baseWidth / 2, baseY);
+  enemyBase.setPosition(width - margin - baseWidth / 2, baseY);
 }
 
 function realignUnitsToGround() {

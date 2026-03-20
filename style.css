@@ -750,3 +750,14 @@ button {
     font-size: 13px;
   }
 }
+
+@media screen and (max-width: 900px) and (orientation: portrait) {
+  .orientation-warning {
+    display: flex;
+  }
+
+  .game-shell {
+    display: none;
+  }
+}
+
