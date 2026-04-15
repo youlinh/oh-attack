@@ -4837,22 +4837,38 @@ function realignUnitsToGround() {
 }
 
 function resizeCanvas() {
-  const { width, height } = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
+  // 强制 layout 回流后取真实尺寸，避免 0×0 问题
+  const rect = canvas.getBoundingClientRect();
+  const width  = rect.width  || canvas.offsetWidth  || 800;
+  const height = rect.height || canvas.offsetHeight || 400;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3); // 最高 3x，防止极高分辨率浪费性能
 
-  canvas.width = Math.floor(width * dpr);
+  canvas.width  = Math.floor(width  * dpr);
   canvas.height = Math.floor(height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  gameState.battlefield.width = width;
-  gameState.battlefield.height = height;
-  gameState.battlefield.laneY = height * 0.58;
+  gameState.battlefield.width   = width;
+  gameState.battlefield.height  = height;
+  gameState.battlefield.laneY   = height * 0.58;
   gameState.battlefield.groundY = height * 0.76;
-  gameState.battlefield.minX = 0;
-  gameState.battlefield.maxX = width;
+  gameState.battlefield.minX    = 0;
+  gameState.battlefield.maxX    = width;
 
   updateBaseLayout();
   realignUnitsToGround();
+
+  // resize 后重新绘制兵种图标，适应新的 CSS 尺寸
+  refreshUnitButtons();
+}
+
+// 节流版 resize 处理器（16ms ≈ 1 帧），避免频繁触发
+let _resizeTimer = null;
+function handleResize() {
+  if (_resizeTimer !== null) return;
+  _resizeTimer = window.setTimeout(() => {
+    _resizeTimer = null;
+    resizeCanvas();
+  }, 16);
 }
 
 function updateEconomy(deltaTime) {
@@ -5252,7 +5268,7 @@ function speakCommand(text) {
 }
 
 function bindEvents() {
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', handleResize);
   document.addEventListener('pointerdown', () => {
     soundManager.armFromGesture();
   }, { once: true });

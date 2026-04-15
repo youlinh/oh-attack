@@ -26,6 +26,8 @@ body {
   font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   color: var(--text-main);
   background: radial-gradient(circle at top, #29427e 0%, #111827 48%, #060910 100%);
+  /* 禁止双击缩放，提升移动端点击响应速度 */
+  touch-action: manipulation;
 }
 
 body.modal-open {
@@ -34,6 +36,8 @@ body.modal-open {
 
 button {
   font: inherit;
+  /* 移动端触控优化：消除触摸延迟 */
+  touch-action: manipulation;
 }
 
 [hidden],
@@ -559,12 +563,47 @@ button {
   font-weight: 700;
 }
 
+/* ─── 1280px：大屏平板 / 小电脑 ────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .top-bar {
+    grid-template-columns: repeat(3, minmax(110px, 1fr)) minmax(100px, 130px);
+    gap: 10px;
+    padding: 14px 16px 10px;
+  }
+
+  .stat-card,
+  .sound-toggle-button {
+    min-height: 66px;
+  }
+
+  .stat-card {
+    padding: 10px 12px;
+  }
+
+  .unit-buttons {
+    grid-template-columns: repeat(10, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .action-button .unit-icon {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ─── 1080px ────────────────────────────────────────────────────────────────── */
 @media (max-width: 1080px) {
   .top-bar {
     grid-template-columns: repeat(3, minmax(120px, 1fr));
   }
+
+  .unit-buttons {
+    grid-template-columns: repeat(10, minmax(72px, 1fr));
+    gap: 9px;
+  }
 }
 
+/* ─── 900px：平板横屏 / 小屏笔电 ───────────────────────────────────────────── */
 @media (max-width: 900px) {
   html,
   body,
@@ -664,8 +703,8 @@ button {
   }
 
   .action-button .unit-icon {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   .action-button .button-title {
@@ -728,6 +767,7 @@ button {
   }
 }
 
+/* ─── 640px：手机横屏 / 小平板 ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
   html,
   body,
@@ -754,7 +794,7 @@ button {
   }
 
   .top-bar strong {
-    font-size: 12px;
+    font-size: clamp(10px, 2vw, 12px);
     line-height: 1.15;
   }
 
@@ -792,21 +832,22 @@ button {
     padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
   }
 
+  /* 640px 以下：5 列布局，适合小平板横屏 */
   .unit-buttons {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 8px;
   }
 
   .action-button {
-    min-height: 72px;
+    min-height: 76px;
     padding: 6px 6px;
     gap: 3px;
     border-radius: 12px;
   }
 
   .action-button .unit-icon {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 6px;
   }
 
@@ -877,6 +918,106 @@ button {
   }
 }
 
+/* ─── 480px：极小手机横屏（宽度 < 480，高度通常 < 320）────────────────────── */
+@media (max-width: 480px) {
+  .top-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px 10px 6px;
+  }
+
+  .stat-card,
+  .sound-toggle-button {
+    min-height: 40px;
+  }
+
+  .stat-card {
+    gap: 1px;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+
+  .top-bar strong {
+    font-size: clamp(9px, 1.8vw, 11px);
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .sound-toggle-text {
+    display: none; /* 极小屏只显示图标 */
+  }
+
+  .battlefield-frame {
+    min-height: clamp(160px, 38dvh, 320px);
+    padding: 0 10px 8px;
+  }
+
+  .control-panel {
+    gap: 7px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  /* 极小屏：3 列布局 */
+  .unit-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .action-button {
+    min-height: 66px;
+    padding: 4px 4px;
+    gap: 2px;
+    border-radius: 10px;
+  }
+
+  .action-button .unit-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+  }
+
+  .action-button .button-title {
+    font-size: clamp(9px, 2vw, 10px);
+  }
+
+  .action-button .button-meta {
+    font-size: 8px;
+  }
+
+  .cmd-button {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 10px;
+  }
+
+  .shop-button {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .shop-modal,
+  .result-modal {
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .shop-header h2,
+  .result-modal h2 {
+    font-size: 17px;
+  }
+
+  .shop-card-content h3 {
+    font-size: 15px;
+  }
+}
+
+/* ─── 竖屏提示：portrait 手机 ───────────────────────────────────────────────── */
 @media screen and (max-width: 900px) and (orientation: portrait) {
   .orientation-warning {
     display: flex;
@@ -887,6 +1028,7 @@ button {
   }
 }
 
+/* ─── 超矮横屏（手机横屏，高度 < 500px）────────────────────────────────────── */
 @media screen and (max-height: 500px) and (orientation: landscape) {
   .top-bar {
     gap: 6px;
@@ -946,7 +1088,7 @@ button {
   }
 
   .action-button {
-    min-height: 60px;
+    min-height: 58px;
     padding: 4px 6px;
     gap: 2px;
   }
@@ -961,16 +1103,42 @@ button {
   }
 
   .action-button .button-meta {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .shop-button {
     width: auto;
-    min-width: 108px;
+    min-width: 96px;
+    min-height: 38px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .cmd-button {
     min-height: 40px;
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  /* 超矮横屏：指令按钮竖排，节省横向空间 */
+  .command-buttons {
+    flex-direction: column;
+    gap: 4px;
   }
 }
 
+/* ─── 超矮横屏 + 极窄（手机横屏 < 480px 宽）───────────────────────────────── */
+@media screen and (max-height: 500px) and (max-width: 480px) and (orientation: landscape) {
+  .unit-buttons {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 
+  .action-button .unit-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .action-button .button-meta {
+    display: none; /* 极端小屏隐藏价格，只保留名称和图标 */
+  }
+}
