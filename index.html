@@ -46,13 +46,21 @@
     </main>
 
     <section class="control-panel" aria-label="底部操作面板">
+      <div class="command-buttons" aria-label="全局指令">
+        <button class="cmd-button cmd-button--attack is-active" id="cmdAttackBtn" aria-pressed="true">⚔️ 全军出击</button>
+        <button class="cmd-button cmd-button--retreat" id="cmdRetreatBtn" aria-pressed="false">🛡️ 撤回基地</button>
+      </div>
       <div class="unit-buttons">
-        <button class="action-button" data-unit="zombie">僵尸</button>
-        <button class="action-button" data-unit="swordsman">剑士</button>
-        <button class="action-button" data-unit="spearman">长矛兵</button>
-        <button class="action-button" data-unit="archer">弓箭手</button>
-        <button class="action-button" data-unit="giant">巨人</button>
-        <button class="action-button" data-unit="warship">大战舰</button>
+        <button class="action-button" data-unit="zombie"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="swordsman"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="spearman"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="archer"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="shield_guard"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="giant"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="swordsman_leader"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="spearman_leader"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="machine_gunner"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="warship"><canvas class="unit-icon"></canvas></button>
       </div>
       <button class="shop-button" id="shopButton">打开商店</button>
     </section>
@@ -131,6 +139,42 @@
           <div class="shop-card-footer">
             <span class="shop-state" id="shopAttackUpgradeState">+0%</span>
             <button class="shop-action-button" id="upgradeAttackButton" data-shop-action="upgrade-attack">购买升级</button>
+          </div>
+        </article>
+
+        <article class="shop-card">
+          <div class="shop-card-content">
+            <span class="shop-tag">兵种解锁</span>
+            <h3>解锁剑士首领</h3>
+            <p>体型更大、攻击更强的剑士统帅，并为周围剑士提供速度与攻击光环。</p>
+          </div>
+          <div class="shop-card-footer">
+            <span class="shop-state" id="shopUnlockSwordsmanLeaderState">未解锁</span>
+            <button class="shop-action-button" id="unlockSwordsmanLeaderButton" data-shop-action="unlock-unit" data-unit="swordsman_leader">解锁</button>
+          </div>
+        </article>
+
+        <article class="shop-card">
+          <div class="shop-card-content">
+            <span class="shop-tag">兵种解锁</span>
+            <h3>解锁矛兵首领</h3>
+            <p>长矛兵的精锐首领，自身攻击力强悍，并为周围长矛兵提供攻击范围光环。</p>
+          </div>
+          <div class="shop-card-footer">
+            <span class="shop-state" id="shopUnlockSpearmanLeaderState">未解锁</span>
+            <button class="shop-action-button" id="unlockSpearmanLeaderButton" data-shop-action="unlock-unit" data-unit="spearman_leader">解锁</button>
+          </div>
+        </article>
+
+        <article class="shop-card">
+          <div class="shop-card-content">
+            <span class="shop-tag">兵种解锁</span>
+            <h3>解锁机枪兵</h3>
+            <p>双重火力单位：高频机枪持续压制，低频狙击重创敌人，射程极远。</p>
+          </div>
+          <div class="shop-card-footer">
+            <span class="shop-state" id="shopUnlockMachineGunnerState">未解锁</span>
+            <button class="shop-action-button" id="unlockMachineGunnerButton" data-shop-action="unlock-unit" data-unit="machine_gunner">解锁</button>
           </div>
         </article>
       </div>

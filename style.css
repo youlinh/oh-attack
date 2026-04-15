@@ -185,10 +185,62 @@ button {
   backdrop-filter: blur(10px);
 }
 
+.command-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cmd-button {
+  min-width: 120px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+.cmd-button--attack {
+  background: linear-gradient(180deg, #e84f2f 0%, #b02010 100%);
+  border-color: rgba(255, 160, 120, 0.3);
+}
+
+.cmd-button--attack.is-active {
+  border-color: rgba(255, 200, 150, 0.7);
+  box-shadow: 0 0 14px rgba(255, 120, 60, 0.55), 0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+.cmd-button--retreat {
+  background: linear-gradient(180deg, #3a6db5 0%, #1e3f70 100%);
+  border-color: rgba(120, 180, 255, 0.3);
+  opacity: 0.75;
+}
+
+.cmd-button--retreat.is-active {
+  opacity: 1;
+  border-color: rgba(120, 180, 255, 0.7);
+  box-shadow: 0 0 14px rgba(80, 160, 255, 0.55), 0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+.cmd-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.cmd-button:active {
+  transform: translateY(0);
+}
+
 .unit-buttons {
   display: grid;
   flex: 1;
-  grid-template-columns: repeat(6, minmax(96px, 1fr));
+  grid-template-columns: repeat(10, minmax(88px, 1fr));
   gap: 12px;
 }
 
@@ -214,21 +266,33 @@ button {
 .action-button {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
+  padding: 8px 10px;
   background: var(--button-bg);
-  text-align: left;
+  text-align: center;
+}
+
+.action-button .unit-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  display: block;
 }
 
 .action-button .button-title {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .action-button .button-meta {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.8);
+  line-height: 1.2;
 }
 
 .action-button.is-locked {
@@ -573,8 +637,18 @@ button {
     padding: 12px 14px calc(14px + env(safe-area-inset-bottom));
   }
 
+  .command-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .cmd-button {
+    flex: 1;
+    min-width: 0;
+  }
+
   .unit-buttons {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 10px;
   }
 
@@ -583,18 +657,23 @@ button {
   }
 
   .action-button {
-    min-height: 52px;
-    padding: 10px 12px;
-    gap: 3px;
+    min-height: 80px;
+    padding: 6px 8px;
+    gap: 4px;
     border-radius: 14px;
   }
 
+  .action-button .unit-icon {
+    width: 36px;
+    height: 36px;
+  }
+
   .action-button .button-title {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .action-button .button-meta {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .shop-button {
@@ -719,18 +798,24 @@ button {
   }
 
   .action-button {
-    min-height: 44px;
-    padding: 8px 10px;
-    gap: 2px;
+    min-height: 72px;
+    padding: 6px 6px;
+    gap: 3px;
     border-radius: 12px;
   }
 
+  .action-button .unit-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+  }
+
   .action-button .button-title {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .action-button .button-meta {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .shop-button {
@@ -861,13 +946,18 @@ button {
   }
 
   .action-button {
-    min-height: 40px;
-    padding: 6px 8px;
-    gap: 1px;
+    min-height: 60px;
+    padding: 4px 6px;
+    gap: 2px;
+  }
+
+  .action-button .unit-icon {
+    width: 28px;
+    height: 28px;
   }
 
   .action-button .button-title {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .action-button .button-meta {
