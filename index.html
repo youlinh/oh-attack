@@ -60,9 +60,10 @@
         <button class="action-button" data-unit="swordsman_leader"><canvas class="unit-icon"></canvas></button>
         <button class="action-button" data-unit="spearman_leader"><canvas class="unit-icon"></canvas></button>
         <button class="action-button" data-unit="machine_gunner"><canvas class="unit-icon"></canvas></button>
+        <button class="action-button" data-unit="sniper"><canvas class="unit-icon"></canvas></button>
         <button class="action-button" data-unit="warship"><canvas class="unit-icon"></canvas></button>
       </div>
-      <button class="shop-button" id="shopButton">打开商店</button>
+      <button class="shop-button" id="shopButton">商店</button>
     </section>
   </div>
 
@@ -163,6 +164,18 @@
           <div class="shop-card-footer">
             <span class="shop-state" id="shopUnlockSpearmanLeaderState">未解锁</span>
             <button class="shop-action-button" id="unlockSpearmanLeaderButton" data-shop-action="unlock-unit" data-unit="spearman_leader">解锁</button>
+          </div>
+        </article>
+
+        <article class="shop-card">
+          <div class="shop-card-content">
+            <span class="shop-tag">兵种解锁</span>
+            <h3>解锁狙击兵</h3>
+            <p>超远射程、单发 168 伤，但防御薄弱。连发 10 发后须冷却 3 秒再继续射击。发射时会趴下，平时站立。</p>
+          </div>
+          <div class="shop-card-footer">
+            <span class="shop-state" id="shopUnlockSniperState">未解锁</span>
+            <button class="shop-action-button" id="unlockSniperButton" data-shop-action="unlock-unit" data-unit="sniper">解锁</button>
           </div>
         </article>
 

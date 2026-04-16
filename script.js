@@ -16,7 +16,8 @@ const UNIT_TYPE = Object.freeze({
   MACHINE_GUNNER: 'machine_gunner',
   SHIELD_GUARD: 'shield_guard',
   SWORDSMAN_LEADER: 'swordsman_leader',
-  SPEARMAN_LEADER: 'spearman_leader'
+  SPEARMAN_LEADER: 'spearman_leader',
+  SNIPER: 'sniper'
 });
 
 const UNIT_META = Object.freeze({
@@ -89,6 +90,13 @@ const UNIT_META = Object.freeze({
     unlockCost: 619,
     unlockedByDefault: false,
     diamondReward: 18
+  },
+  [UNIT_TYPE.SNIPER]: {
+    label: '狙击兵',
+    goldCost: 450,
+    unlockCost: 450,
+    unlockedByDefault: false,
+    diamondReward: 22
   }
 });
 
@@ -593,6 +601,38 @@ class SoundManager {
     });
   }
 
+  // 狙击枪声：低频重击 + 短促爆裂噪声，区别于机枪的快速高频声
+  playSniperShot() {
+    if (!this.canPlay()) return;
+
+    const now = this.context.currentTime;
+    // 低沉的击发声
+    this.playTone(200, now, 0.08, {
+      type: 'sawtooth',
+      volume: 0.045,
+      attack: 0.001,
+      release: 0.06,
+      frequencyEnd: 60
+    });
+    // 中频穿透感
+    this.playTone(780, now, 0.05, {
+      type: 'triangle',
+      volume: 0.022,
+      attack: 0.001,
+      release: 0.04,
+      frequencyEnd: 280
+    });
+    // 枪声噪声（爆裂感）
+    this.playNoise(now, 0.07, {
+      volume: 0.03,
+      attack: 0.001,
+      release: 0.06,
+      filterType: 'lowpass',
+      filterFrequency: 1800,
+      q: 0.8
+    });
+  }
+
   playZombieGroan() {
     if (!this.canPlay()) {
       return;
@@ -731,6 +771,9 @@ class SoundManager {
       case UNIT_TYPE.MACHINE_GUNNER:
         this.playShoot();
         break;
+      case UNIT_TYPE.SNIPER:
+        this.playSniperShot();
+        break;
       case UNIT_TYPE.GIANT:
         this.playHeavyThud();
         break;
@@ -771,6 +814,7 @@ const ui = {
   shopUnlockSwordsmanLeaderState: document.getElementById('shopUnlockSwordsmanLeaderState'),
   shopUnlockSpearmanLeaderState: document.getElementById('shopUnlockSpearmanLeaderState'),
   shopUnlockMachineGunnerState: document.getElementById('shopUnlockMachineGunnerState'),
+  shopUnlockSniperState: document.getElementById('shopUnlockSniperState'),
   shopBaseUpgradeState: document.getElementById('shopBaseUpgradeState'),
   shopAttackUpgradeState: document.getElementById('shopAttackUpgradeState'),
   unlockGiantButton: document.getElementById('unlockGiantButton'),
@@ -778,6 +822,7 @@ const ui = {
   unlockSwordsmanLeaderButton: document.getElementById('unlockSwordsmanLeaderButton'),
   unlockSpearmanLeaderButton: document.getElementById('unlockSpearmanLeaderButton'),
   unlockMachineGunnerButton: document.getElementById('unlockMachineGunnerButton'),
+  unlockSniperButton: document.getElementById('unlockSniperButton'),
   upgradeBaseButton: document.getElementById('upgradeBaseButton'),
   upgradeAttackButton: document.getElementById('upgradeAttackButton'),
   cmdAttackBtn: document.getElementById('cmdAttackBtn'),
@@ -969,6 +1014,7 @@ function renderUnitMiniIcon(canvas, unitType) {
     case UNIT_TYPE.SHIELD_GUARD:    unit = new ShieldGuard(dummyConfig);     break;
     case UNIT_TYPE.SWORDSMAN_LEADER: unit = new SwordsmanLeader(dummyConfig); break;
     case UNIT_TYPE.SPEARMAN_LEADER:  unit = new SpearmanLeader(dummyConfig);  break;
+    case UNIT_TYPE.SNIPER:           unit = new Sniper(dummyConfig);          break;
     default: {
       // 兜底：问号圆
       c.fillStyle = '#3a6ab5';
@@ -1055,6 +1101,7 @@ function renderShop() {
   const swordsmanLeaderUnlocked = isUnitUnlocked(UNIT_TYPE.SWORDSMAN_LEADER);
   const spearmanLeaderUnlocked = isUnitUnlocked(UNIT_TYPE.SPEARMAN_LEADER);
   const machineGunnerUnlocked = isUnitUnlocked(UNIT_TYPE.MACHINE_GUNNER);
+  const sniperUnlocked = isUnitUnlocked(UNIT_TYPE.SNIPER);
   const baseUpgradeMaxed = gameState.progression.baseHpLevel >= UPGRADE_CONFIG.baseHp.maxLevel;
   const attackUpgradeMaxed = gameState.progression.attackLevel >= UPGRADE_CONFIG.attackBuff.maxLevel;
   const giantCost = getUnitMeta(UNIT_TYPE.GIANT).unlockCost;
@@ -1062,6 +1109,7 @@ function renderShop() {
   const swordsmanLeaderCost = getUnitMeta(UNIT_TYPE.SWORDSMAN_LEADER).unlockCost;
   const spearmanLeaderCost = getUnitMeta(UNIT_TYPE.SPEARMAN_LEADER).unlockCost;
   const machineGunnerCost = getUnitMeta(UNIT_TYPE.MACHINE_GUNNER).unlockCost;
+  const sniperCost = getUnitMeta(UNIT_TYPE.SNIPER).unlockCost;
   const baseUpgradeCost = getBaseUpgradeCost();
   const attackUpgradeCost = getAttackUpgradeCost();
   const currentAttackPercent = Math.round((getPlayerAttackMultiplier() - 1) * 100);
@@ -1090,6 +1138,10 @@ function renderShop() {
   ui.shopUnlockMachineGunnerState.textContent = machineGunnerUnlocked ? '已解锁' : `${machineGunnerCost} 钻石`;
   ui.unlockMachineGunnerButton.textContent = machineGunnerUnlocked ? '已解锁' : '解锁';
   decorateShopActionButton(ui.unlockMachineGunnerButton, machineGunnerUnlocked, diamonds >= machineGunnerCost);
+
+  ui.shopUnlockSniperState.textContent = sniperUnlocked ? '已解锁' : `${sniperCost} 钻石`;
+  ui.unlockSniperButton.textContent = sniperUnlocked ? '已解锁' : '解锁';
+  decorateShopActionButton(ui.unlockSniperButton, sniperUnlocked, diamonds >= sniperCost);
 
   ui.shopBaseUpgradeState.textContent = baseUpgradeMaxed
     ? `已满级 · Lv.${gameState.progression.baseHpLevel + 1}`
@@ -3621,6 +3673,335 @@ class MachineGunner extends Unit {
 }
 
 
+// ─── Sniper ──────────────────────────────────────────────────────────────────
+// 狙击兵：攻击力 168，防御薄弱，连发 10 发后强制冷却 3 s
+// 状态：发射时趴下（prone），平时站立（standing）
+class Sniper extends Unit {
+  constructor(config) {
+    const meta = getUnitMeta(UNIT_TYPE.SNIPER);
+
+    super({
+      ...config,
+      type: UNIT_TYPE.SNIPER,
+      label: meta.label,
+      maxHp: 90,           // 防御弱：血量低
+      attackPower: 168,    // 单发高伤
+      attackRange: 280,    // 超远射程
+      moveSpeed: 48,
+      attackCooldown: 1.4, // 单发慢
+      size: 28,
+      cost: meta.goldCost,
+      diamondReward: meta.diamondReward
+    });
+
+    // 连发机制
+    this.bulletsFired  = 0;     // 本轮已发弹数
+    this.burstMax      = 10;    // 连发上限
+    this.burstCooldown = 3.0;   // 连发冷却时长（秒）
+    this.burstTimer    = 0;     // > 0 时正在冷却，无法射击
+    this.prone         = false; // 是否处于趴下姿态
+  }
+
+  update(deltaTime, frame) {
+    if (!this.isAlive()) return;
+
+    this.attackTimer = Math.max(0, this.attackTimer - deltaTime);
+    this.hitFlash    = Math.max(0, this.hitFlash    - deltaTime);
+    this.attackFlash = Math.max(0, this.attackFlash - deltaTime);
+
+    // 连发冷却倒计时
+    if (this.burstTimer > 0) {
+      this.burstTimer = Math.max(0, this.burstTimer - deltaTime);
+      if (this.burstTimer <= 0) {
+        // 冷却结束，重置连发计数
+        this.bulletsFired = 0;
+      }
+      // 冷却期间保持趴下姿态
+      this.prone = true;
+    }
+
+    if (this.poisoned) {
+      this.poisonTimer = Math.max(0, this.poisonTimer - deltaTime);
+      this.hp = Math.max(0, this.hp - ZOMBIE_POISON_DPS * deltaTime);
+      this.hitFlash = Math.max(this.hitFlash, 0.05);
+      if (!this.isAlive()) {
+        defeatTarget(this, this.poisonSource);
+        return;
+      }
+      if (this.poisonTimer <= 0) this.clearPoison();
+    }
+
+    const retreating = this.team === TEAM.PLAYER && gameState.playerCommand === 'retreat';
+    if (retreating) {
+      const playerBase = gameState.bases.player;
+      const distToBase = Math.abs(this.x - playerBase.x) - this.collisionRadius - playerBase.collisionRadius;
+      if (distToBase <= 50) {
+        this.state = 'defending';
+        this.prone = false;
+        return;
+      }
+      this.state = 'marching';
+      this.prone = false;
+      this.move(deltaTime, frame.battlefield);
+      return;
+    }
+
+    const nearestEnemy = this.findNearestEnemyAhead(frame.enemies);
+    const primaryTarget = nearestEnemy || frame.enemyBase;
+
+    if (primaryTarget && this.canAttack(primaryTarget)) {
+      this.state = 'attacking';
+
+      // 冷却期间不能射击，但保持攻击姿态
+      if (this.burstTimer > 0) {
+        this.prone = true;
+        return;
+      }
+
+      this.prone = true; // 射击中趴下
+
+      if (this.attackTimer <= 0) {
+        this.attackTimer = this.attackCooldown;
+        this.attackFlash = 0.22;
+        soundManager.playUnitAttack(this.type);
+
+        frame.attackEvents.push({
+          source: this,
+          target: primaryTarget,
+          damage: this.attackPower,
+          aoeRadius: 0,
+          impactX: primaryTarget.x,
+          impactY: primaryTarget.y,
+          targetTeam: primaryTarget.team
+        });
+
+        this.bulletsFired += 1;
+
+        // 打满 burstMax 发 → 进入冷却
+        if (this.bulletsFired >= this.burstMax) {
+          this.burstTimer   = this.burstCooldown;
+          // bulletsFired 在 burstTimer 归零时重置
+        }
+      }
+      return;
+    }
+
+    // 没有目标时站立
+    this.prone = false;
+
+    const blockingAlly = this.findNearestAllyAhead(frame.allies);
+    if (blockingAlly && this.getEdgeGapTo(blockingAlly) <= this.formationPadding) {
+      this.state = 'holding';
+      return;
+    }
+
+    this.state = 'marching';
+    this.move(deltaTime, frame.battlefield);
+  }
+
+  // ── 绘制（站立 / 趴下两种姿态）──────────────────────────────────────────
+  draw() {
+    const sz = this.size;
+    const isProne = this.prone;
+
+    // 颜色
+    const cloakColor  = this.getBodyFlashColor(this.team === TEAM.PLAYER ? '#4a6b40' : '#7a4a30');
+    const skinColor   = this.hitFlash > 0 ? '#ffffff' : '#f0c9a4';
+    const rifleDark   = this.hitFlash > 0 ? '#ffffff' : '#2a3040';
+    const rifleLight  = this.hitFlash > 0 ? '#ffffff' : '#8fa0b8';
+    const scopeColor  = this.attackFlash > 0 ? 'rgba(255,240,80,0.95)' : 'rgba(60,180,255,0.9)';
+
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.scale(this.direction, 1);
+    ctx.lineJoin = 'round';
+    ctx.lineCap  = 'round';
+    ctx.shadowColor = this.getGlowColor('rgba(120,255,160,0.8)', 'rgba(255,255,255,0.07)');
+    ctx.shadowBlur  = this.attackFlash > 0 ? 24 : 7;
+
+    const recoil = this.attackFlash > 0 ? -this.attackFlash * sz * 0.14 : 0;
+
+    if (isProne) {
+      // ── 趴下姿态 ──────────────────────────────────────────
+      const bw = sz * 1.8;
+      const bh = sz * 0.8;
+
+      // 身体（水平长条）
+      ctx.fillStyle = cloakColor;
+      ctx.fillRect(-bw * 0.1, -bh * 0.35, bw * 0.9, bh * 0.7);
+
+      // 双腿向后延伸
+      ctx.fillStyle = cloakColor;
+      ctx.fillRect(-bw * 0.1, bh * 0.1, bw * 0.44, bh * 0.3);
+
+      // 头（趴下时偏前）
+      ctx.fillStyle = cloakColor; // 狙击帽
+      ctx.beginPath();
+      ctx.arc(bw * 0.56, -bh * 0.22, sz * 0.26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = skinColor;
+      ctx.beginPath();
+      ctx.arc(bw * 0.6, -bh * 0.18, sz * 0.17, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 狙击枪（趴下时水平伸出）
+      ctx.save();
+      ctx.translate(recoil, 0);
+      ctx.fillStyle = rifleDark;
+      ctx.fillRect(bw * 0.56, -bh * 0.1, bw * 0.72, sz * 0.12);
+      // 枪管
+      ctx.fillStyle = rifleLight;
+      ctx.fillRect(bw * 0.62, -bh * 0.07, bw * 0.6, sz * 0.06);
+      // 瞄准镜
+      ctx.fillStyle = rifleDark;
+      ctx.fillRect(bw * 0.7, -bh * 0.22, bw * 0.15, sz * 0.14);
+      ctx.fillStyle = scopeColor;
+      ctx.beginPath();
+      ctx.arc(bw * 0.775, -bh * 0.22, sz * 0.055, 0, Math.PI * 2);
+      ctx.fill();
+      // 枪托
+      ctx.fillStyle = rifleDark;
+      ctx.fillRect(bw * 0.56, -bh * 0.12, bw * 0.1, sz * 0.16);
+      ctx.restore();
+
+      // 连发冷却指示条（红色）
+      if (this.burstTimer > 0) {
+        const ratio = this.burstTimer / this.burstCooldown;
+        ctx.fillStyle = 'rgba(255,60,60,0.85)';
+        ctx.fillRect(-bw * 0.1, -bh * 0.55, bw * ratio * 0.9, 4);
+        ctx.fillStyle = 'rgba(80,80,80,0.5)';
+        ctx.fillRect(-bw * 0.1 + bw * ratio * 0.9, -bh * 0.55, bw * (1 - ratio) * 0.9, 4);
+      }
+
+    } else {
+      // ── 站立姿态 ──────────────────────────────────────────
+      const bw = sz * 1.1;
+      const bh = sz * 1.6;
+
+      // 腿
+      ctx.fillStyle = cloakColor;
+      ctx.fillRect(-bw * 0.14, bh * 0.15, bw * 0.12, bh * 0.38);
+      ctx.fillRect(bw * 0.02, bh * 0.15, bw * 0.12, bh * 0.38);
+
+      // 躯干（迷彩披风）
+      ctx.fillStyle = cloakColor;
+      ctx.beginPath();
+      ctx.moveTo(-bw * 0.24, -bh * 0.1);
+      ctx.lineTo(bw * 0.16, -bh * 0.1);
+      ctx.lineTo(bw * 0.22, bh * 0.22);
+      ctx.lineTo(-bw * 0.18, bh * 0.28);
+      ctx.closePath();
+      ctx.fill();
+
+      // 头盔（扁平狙击帽）
+      ctx.fillStyle = cloakColor;
+      ctx.beginPath();
+      ctx.ellipse(0, -bh * 0.37, bw * 0.22, bw * 0.14, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 脸
+      ctx.fillStyle = skinColor;
+      ctx.beginPath();
+      ctx.arc(0, -bh * 0.3, bw * 0.14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 狙击枪（斜背或端枪）
+      ctx.save();
+      ctx.translate(recoil, 0);
+      ctx.rotate(-0.18); // 微微端枪角度
+      ctx.fillStyle = rifleDark;
+      ctx.fillRect(bw * 0.08, -bh * 0.12, bw * 0.9, sz * 0.11);
+      ctx.fillStyle = rifleLight;
+      ctx.fillRect(bw * 0.12, -bh * 0.1, bw * 0.75, sz * 0.05);
+      // 瞄准镜
+      ctx.fillStyle = rifleDark;
+      ctx.fillRect(bw * 0.28, -bh * 0.22, bw * 0.14, sz * 0.12);
+      ctx.fillStyle = scopeColor;
+      ctx.beginPath();
+      ctx.arc(bw * 0.35, -bh * 0.22, sz * 0.05, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.restore();
+    const bwStatus = sz * (isProne ? 1.8 : 1.1);
+    const bhStatus = sz * (isProne ? 0.8 : 1.6);
+    this.drawStatus(bwStatus, bhStatus);
+  }
+
+  // ── 小图标（用于兵种按钮，始终显示站立姿态）─────────────────────────────
+  drawIcon(c, cx, cy, sz) {
+    const bw = sz * 1.1;
+    const bh = sz * 1.6;
+    const cloakColor = '#4a6b40';
+    const skinColor  = '#f0c9a4';
+    const rifleDark  = '#2a3040';
+    const rifleLight = '#8fa0b8';
+    const scopeColor = 'rgba(60,180,255,0.9)';
+
+    c.save();
+    c.translate(cx, cy);
+    c.lineJoin = 'round';
+    c.lineCap  = 'round';
+
+    // 腿
+    c.fillStyle = cloakColor;
+    c.fillRect(-bw * 0.14, bh * 0.15, bw * 0.12, bh * 0.38);
+    c.fillRect(bw * 0.02, bh * 0.15, bw * 0.12, bh * 0.38);
+
+    // 躯干
+    c.fillStyle = cloakColor;
+    c.beginPath();
+    c.moveTo(-bw * 0.24, -bh * 0.1);
+    c.lineTo(bw * 0.16, -bh * 0.1);
+    c.lineTo(bw * 0.22, bh * 0.22);
+    c.lineTo(-bw * 0.18, bh * 0.28);
+    c.closePath();
+    c.fill();
+
+    // 头盔
+    c.fillStyle = cloakColor;
+    c.beginPath();
+    c.ellipse(0, -bh * 0.37, bw * 0.22, bw * 0.14, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // 脸
+    c.fillStyle = skinColor;
+    c.beginPath();
+    c.arc(0, -bh * 0.3, bw * 0.14, 0, Math.PI * 2);
+    c.fill();
+
+    // 狙击枪
+    c.save();
+    c.rotate(-0.18);
+    c.fillStyle = rifleDark;
+    c.fillRect(bw * 0.08, -bh * 0.12, bw * 0.9, sz * 0.11);
+    c.fillStyle = rifleLight;
+    c.fillRect(bw * 0.12, -bh * 0.1, bw * 0.75, sz * 0.05);
+    c.fillStyle = rifleDark;
+    c.fillRect(bw * 0.28, -bh * 0.22, bw * 0.14, sz * 0.12);
+    c.fillStyle = scopeColor;
+    c.beginPath();
+    c.arc(bw * 0.35, -bh * 0.22, sz * 0.05, 0, Math.PI * 2);
+    c.fill();
+    c.restore();
+
+    // 枪口火光（点缀）
+    c.fillStyle = '#ffcc40';
+    c.globalAlpha = 0.85;
+    c.beginPath();
+    c.moveTo(bw * 0.96, -bh * 0.14);
+    c.lineTo(bw * 1.08, -bh * 0.2);
+    c.lineTo(bw * 1.08, -bh * 0.08);
+    c.closePath();
+    c.fill();
+    c.globalAlpha = 1;
+
+    c.restore();
+  }
+}
+
+
 // ─── ShieldGuard ─────────────────────────────────────────────────────────────
 class ShieldGuard extends Unit {
   constructor(config) {
@@ -4554,6 +4935,9 @@ function createUnit(type, team) {
     case UNIT_TYPE.SPEARMAN_LEADER:
       unit = new SpearmanLeader(config);
       break;
+    case UNIT_TYPE.SNIPER:
+      unit = new Sniper(config);
+      break;
     default:
       return null;
   }
@@ -5310,7 +5694,7 @@ function bindEvents() {
     }
   });
 
-  [ui.unlockGiantButton, ui.unlockWarshipButton, ui.unlockSwordsmanLeaderButton, ui.unlockSpearmanLeaderButton, ui.unlockMachineGunnerButton, ui.upgradeBaseButton, ui.upgradeAttackButton].forEach((button) => {
+  [ui.unlockGiantButton, ui.unlockWarshipButton, ui.unlockSwordsmanLeaderButton, ui.unlockSpearmanLeaderButton, ui.unlockMachineGunnerButton, ui.unlockSniperButton, ui.upgradeBaseButton, ui.upgradeAttackButton].forEach((button) => {
     button.addEventListener('click', () => {
       soundManager.armFromGesture();
       soundManager.playUiClick();
